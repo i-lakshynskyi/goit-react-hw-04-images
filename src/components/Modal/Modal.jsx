@@ -9,11 +9,9 @@ const modalRoot = document.querySelector('#modal-root');
 const Modal = ({ onClose, children }) => {
 
   useEffect(() => {
-    console.log('Mounted');
     window.addEventListener('keydown', handleKeyDown);
 
     return function() {
-      console.log('Unmounted!!!');
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
