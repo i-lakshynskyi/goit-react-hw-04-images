@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
@@ -9,93 +9,82 @@ import { getImagesAPI } from '../api/api';
 import s from './app.module.scss';
 
 
-class App extends Component {
-  state = {
-    images: null,
-    q: 'forest',
-    page: 1,
-    per_page: 12,
-    loading: false,
-  };
+const App = () => {
+  const [images, setImages] = useState([]);
+  const [q, setQ] = useState('forest');
+  const [page, setPage] = useState(1);
+  const [per_page, setPer_Page] = useState(12);
+  const [loading, setLoading] = useState(false);
 
-  componentDidMount() {
-    this.setState({ loading: true });
-    if (!this.state.images) {
-      getImagesAPI(this.state.q, this.state.page, this.state.per_page)
+  useEffect(() => {
+    setLoading(true);
+    if (!images) {
+      getImagesAPI(q, page, per_page)
         .then(req => {
-          this.setState({ images: req.data.hits });
+          setImages(req.data.hits);
         })
         .catch((err) => {
           console.log(err);
         })
         .finally(() => {
-          this.setState({ loading: false });
+          setLoading(false);
         });
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const flagMoreIMG = prevState.page !== this.state.page && this.state.images && prevState.q === this.state.q;
-    const flagNewIMG = prevState.q !== this.state.q;
 
-    if (flagMoreIMG) {
-      this.setState({ loading: true });
-      getImagesAPI(this.state.q, this.state.page, this.state.per_page)
-        .then(req => {
-          this.setState(({ images }) => ({
-            images: [...images, ...req.data.hits],
-          }));
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          this.setState({ loading: false });
-        });
+  useEffect(() => {
+    setLoading(true);
+    getImagesAPI(q, page, per_page)
+      .then(req => {
+        setImages([...images, ...req.data.hits]);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [page]);
 
-    } else if (flagNewIMG) {
-      this.setState({ loading: true });
-      getImagesAPI(this.state.q, this.state.page, this.state.per_page)
-        .then(req => {
-          this.setState({
-            images: [...req.data.hits],
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          this.setState({ loading: false });
-        });
-    }
-  }
+  useEffect(() => {
+    setLoading(true);
+    getImagesAPI(q, page, per_page)
+      .then(req => {
+        setImages(req.data.hits);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [q]);
 
-  onLoadMore = () => {
-    this.setState(({ page }) => ({ page: page + 1 }));
+
+  const onLoadMore = () => {
+    setPage(prevState => prevState + 1);
   };
 
-  onSearch = (qValue) => {
-    this.setState({ q: qValue, page: 1 });
+  const onSearch = (qValue) => {
+    setQ(qValue);
+    setPage(1);
   };
 
-  render() {
-    const { images, loading } = this.state;
-    console.log(images);
-    return (
-      <div className={s.App}>
-        <Searchbar onSearch={this.onSearch} />
-        <ImageGallery images={images} />
-        {images?.length > 0 &&
-          <Button onLoadMore={this.onLoadMore} />
-        }
-        {loading &&
-          <Modal>
-            <Loader />
-          </Modal>
-        }
-      </div>
-    );
-  }
-}
+  return (
+    <div className={s.App}>
+      <Searchbar onSearch={onSearch} />
+      <ImageGallery images={images} />
+      {images?.length > 0 &&
+        <Button onLoadMore={onLoadMore} />
+      }
+      {loading &&
+        <Modal>
+          <Loader />
+        </Modal>
+      }
+    </div>
+  );
+};
 
 export default App;

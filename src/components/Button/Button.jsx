@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import s from './button.module.scss';
 
-class Button extends Component {
+const Button = ({ onLoadMore }) => {
+  return (
+    <div className={s.ButtonWrapper}>
+      <button type={'button'} className={s.Button} onClick={onLoadMore}>
+        Load more
+      </button>
+    </div>
+  );
+};
 
-  static propTypes = {
-    onLoadMore: PropTypes.func,
-  }
-
-  render() {
-    return (
-      <div className={s.ButtonWrapper}>
-        <button type={"button"} className={s.Button} onClick={this.props.onLoadMore}>
-          Load more
-        </button>
-      </div>
-    );
-  }
-}
-
+Button.propTypes = {
+  onLoadMore: PropTypes.func,
+};
 export default Button;

@@ -1,33 +1,26 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {ImSearch} from 'react-icons/im';
 import PropTypes from 'prop-types';
 
 import s from './searchbar.module.scss';
 
-class Searchbar extends Component {
+const Searchbar = ({onSearch}) => {
+  const[searchValue, setSearchValue] = useState('');
 
-  static propTypes = {
-    onSearch: PropTypes.func,
-  }
-
-  state = {
-    searchValue: '',
-  }
-
-  onChangeSearch = (e) => {
+  const onChangeSearch = (e) => {
     const inpValue = e.currentTarget.value;
-    this.setState({searchValue: inpValue});
+    setSearchValue(inpValue);
   }
 
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    this.props.onSearch(this.state.searchValue);
+    onSearch(searchValue);
   };
 
-  render() {
+
     return (
       <div className={s.Searchbar}>
-        <form className={s.SearchForm} onSubmit={this.onSubmit}>
+        <form className={s.SearchForm} onSubmit={onSubmit}>
           <button type='submit' className={s.SearchFormButton} title={"search"}>
             <span className={s.SearchFormButtonLabel}><ImSearch/></span>
           </button>
@@ -38,13 +31,15 @@ class Searchbar extends Component {
             autoComplete='off'
             autoFocus
             placeholder='Search images and photos'
-            value={this.state.searchValue}
-            onChange={this.onChangeSearch}
+            value={searchValue}
+            onChange={onChangeSearch}
           />
         </form>
       </div>
     );
-  }
 }
 
+Searchbar.propTypes = {
+  onSearch: PropTypes.func,
+}
 export default Searchbar;
