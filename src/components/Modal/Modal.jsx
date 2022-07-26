@@ -18,7 +18,7 @@ const Modal = ({ onClose, children }) => {
 
   const handleKeyDown = (e) => {
     if (e.code === 'Escape') {
-      onClose();
+      onClose(e);
     }
   };
 
@@ -32,5 +32,6 @@ const Modal = ({ onClose, children }) => {
 
 Modal.propTypes = {
   onClose: PropTypes.func,
+  children: PropTypes.node.isRequired,
 };
 export default Modal;

@@ -1,31 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import Modal from '../Modal/Modal';
 import PropTypes from 'prop-types';
 import s from './image-gallery.module.scss';
 
-const ImageGallery = ({ images }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [currentLargeImageURL, setCurrentLargeImageURL] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const onOpenModal = (id) => {
-    const currentIMG = images?.reduce((acc, img) => {
-      if (img.id === id) {
-        acc['largeImageURL'] = img.largeImageURL;
-        acc['user'] = img.user;
-      }
-      return acc;
-    }, {});
-
-    setShowModal(!showModal);
-    setCurrentLargeImageURL(currentIMG.largeImageURL);
-    setCurrentUser(currentIMG.user);
-  };
-
-  const onCloseModal = () => {
-    setShowModal(!showModal);
-  };
+const ImageGallery = ({ images, onOpenModal, onCloseModal, showModal, currentLargeImageURL, currentUser }) => {
 
   return (
     <React.Fragment>
@@ -51,6 +30,11 @@ ImageGallery.propTypes = {
     webformatURL: PropTypes.string,
     largeImageURL: PropTypes.string,
     user: PropTypes.string,
-  })),
+  })).isRequired,
+  onOpenModal: PropTypes.func.isRequired,
+  onCloseModal: PropTypes.func.isRequired,
+  showModal: PropTypes.bool.isRequired,
+  currentLargeImageURL: PropTypes.string.isRequired,
+  currentUser: PropTypes.string.isRequired,
 };
 export default ImageGallery;
